@@ -1,0 +1,12 @@
+.album-card {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.album-card img {
+    width: 100%;
+    height: auto;
+}
