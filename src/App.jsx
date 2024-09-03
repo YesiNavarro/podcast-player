@@ -1,10 +1,20 @@
 import React from 'react';
+import Sidebar from './components/Sidebar';
+import PlaylistForm from './components/PlaylistForm';
 import Header from './components/Header';
 import SongCard from './components/SongCard';
 import AlbumCard from './components/AlbumCard';
 import ArtistCard from './components/ArtistCard';
 import PlaybackBar from './components/PlaybackBar';
 import './App.css';
+
+const [playlists, setPlaylists] = useState([]);
+  const [formVisible, setFormVisible] = useState(false);
+
+  const addPlaylist = (newPlaylist) => {
+    setPlaylists([...playlists, newPlaylist]);
+    setFormVisible(false);
+  };
 
 const songs = [
   { id: 1, title: "Song 1", artist: "Artist 1" },
@@ -26,6 +36,8 @@ function App() {
   return (
     <div className="App">
       <Header />
+      <Sidebar playlists={playlists} onNewPlaylist={() => setFormVisible(true)} />
+      {formVisible && <PlaylistForm onSubmit={addPlaylist} />}
       <section className="listen-again">
         <h2>Recientes</h2>
         {songs.map(song => (
