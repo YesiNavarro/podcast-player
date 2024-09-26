@@ -1,17 +1,22 @@
 import React from 'react';
-import Playlist from './Playlist';
+import React, { useState } from 'react';
+import PlaylistForm from './PlaylistForm.jsx';
+import Playlist from './Playlist.jsx';
 
-function Sidebar({ playlists, onNewPlaylist }) {
-  return (
-    <div className="sidebar">
-      <button onClick={onNewPlaylist}>Nueva lista de reproducción</button>
-      <div className="playlist-list">
-        {playlists.map((playlist, index) => (
-          <Playlist key={index} playlist={playlist} />
-        ))}
-      </div>
-    </div>
-  );
-}
+const Sidebar = ({ playlists, onAddPlaylist }) => {
+    const [showForm, setShowForm] = useState(false);
+
+    return (
+        <aside>
+            <button onClick={() => setShowForm(!showForm)}>Nueva playlist</button>
+            {showForm && <PlaylistForm onAddPlaylist={onAddPlaylist} />}
+            <section>
+                {playlists.map((playlist, index) => (
+                    <Playlist key={index} playlist={playlist} />
+                ))}
+            </section>
+        </aside>
+    );
+};
 
 export default Sidebar;

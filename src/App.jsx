@@ -1,70 +1,88 @@
 import React from 'react';
-import Sidebar from './components/Sidebar';
-import PlaylistForm from './components/PlaylistForm';
-import Header from './components/Header';
-import SongCard from './components/SongCard';
-import AlbumCard from './components/AlbumCard';
-import ArtistCard from './components/ArtistCard';
-import PlaybackBar from './components/PlaybackBar';
+import { useState, useEffect } from 'react';
+import Header from './components/Header.jsx';
+import SongCard from './components/SongCard.jsx';
+import AlbumCard from './components/AlbumCard.jsx';
+import ArtistCard from './components/ArtistCard.jsx';
+import PlaybackBar from './components/PlaybackBar.jsx';
+import Sidebar from './components/Sidebar.jsx';
+import PodcastList from './components/PodcastList.jsx';
 import './App.css';
 
-const [playlists, setPlaylists] = useState([]);
-  const [formVisible, setFormVisible] = useState(false);
+const App = () => {
+  const [songs] = useState([
+    { title: "Song 1", artist: "Artist 1" },
+    { title: "Song 2", artist: "Artist 2" },
+    { title: "Song 3", artist: "Artist 3" },
+]);
 
-  const addPlaylist = (newPlaylist) => {
-    setPlaylists([...playlists, newPlaylist]);
-    setFormVisible(false);
+  const [albums] = useState([
+    { title: "Album 1", artist: "Artist 1" },
+    { title: "Album 2", artist: "Artist 2" },
+]);
+
+  const [artists] = useState([
+    { name: "Artista Similar 1" },
+    { name: "Artista Similar 2" },
+]);
+
+  const [playlists, setPlaylists] = useState([]);
+  const [podcasts, setPodcasts] = useState([]);
+
+  const addPlaylist = (playlist) => {
+    setPlaylists([...playlists, playlist]);
   };
 
-const songs = [
-  { id: 1, title: "Song 1", artist: "Artist 1" },
-  { id: 2, title: "Song 2", artist: "Artist 2" },
-  { id: 3, title: "Song 3", artist: "Artist 3" }
-];
-
-const albums = [
-  { id: 1, title: "Album 1", artist: "Artist 1", cover: "https://via.placeholder.com/150" },
-  { id: 2, title: "Album 2", artist: "Artist 2", cover: "https://via.placeholder.com/150" }
-];
-
-const artists = [
-  { id: 1, name: "Artist 1", genre: "Genre 1" },
-  { id: 2, name: "Artist 2", genre: "Genre 2" }
-];
-
-function App() {
+  useEffect(() => {
+    fetch("https://api.audioboom.com/audio_clips")
+      .then((response) => response.json())
+      .then((data) => setPodcasts(data.body.audio_clips));
+  }, []);
+  
   return (
     <div className="App">
       <Header />
-      <Sidebar playlists={playlists} onNewPlaylist={() => setFormVisible(true)} />
-      {formVisible && <PlaylistForm onSubmit={addPlaylist} />}
-      <section className="listen-again">
-        <h2>Recientes</h2>
-        {songs.map(song => (
-          <SongCard key={song.id} title={song.title} artist={song.artist} />
-        ))}
-      </section>
-      <section className="quick-picks">
-        <h2>Canciones Sugeridas</h2>
-        {songs.map(song => (
-          <SongCard key={song.id} title={song.title} artist={song.artist} />
-        ))}
-      </section>
-      <section className="recommended-albums">
-        <h2>Albums Recomendados</h2>
-        {albums.map(album => (
-          <AlbumCard key={album.id} title={album.title} artist={album.artist} cover={album.cover} />
-        ))}
-      </section>
-      <section className="similar-artists">
-        <h2>[Artista] Similar</h2>
-        {artists.map(artist => (
-          <ArtistCard key={artist.id} name={artist.name} genre={artist.genre} />
-        ))}
-      </section>
+
+      <div className="main-content">
+        {/* Sidebar for Playlists */}
+        <Sidebar playlists={playlists} onAddPlaylist={addPlaylist} />
+
+        <div className="content">
+          {/* Songs Section */}
+          <section>
+            <h2>Recientes</h2>
+            {songs.map((song, index) => (
+              <SongCard key={index} song={song} />
+            ))}
+          </section>
+          
+          {/* Albums Section */}
+          <section>
+            <h2>Albums Recomendados</h2>
+            {albums.map((album, index) => (
+              <AlbumCard key={index} album={album} />
+            ))}
+          </section>
+          
+          {/* Artists Section */}
+          <section>
+            <h2>Artistas Similares</h2>
+            {artists.map((artist, index) => (
+              <ArtistCard key={index} artist={artist} />
+            ))}
+          </section>
+          
+          {/* Podcasts Section */}
+          <section>
+            <h2>Podcasts</h2>
+            <PodcastList podcasts={podcasts} />
+          </section>
+        </div>
+      </div>
+      
       <PlaybackBar />
     </div>
   );
-}
+};
 
 export default App;

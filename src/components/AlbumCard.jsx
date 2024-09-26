@@ -1,12 +1,11 @@
 import React from 'react';
 import './styles/AlbumCard.css';
 
-const AlbumCard = ({ title, artist, cover }) => {
+const AlbumCard = ({ album }) => {
   return (
-    <div className="album-card">
-      <img src={cover} alt={`${title} cover`} />
-      <p>{title}</p>
-      <p>{artist}</p>
+    <div>
+      <h3>{album.title}</h3>
+      <p>{album.artist}</p>
     </div>
   );
 };
